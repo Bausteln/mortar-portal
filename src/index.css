@@ -1,4 +1,4 @@
-:root {
+:root[data-theme="light"] {
   --primary-color: #2563eb;
   --primary-hover: #1d4ed8;
   --danger-color: #dc2626;
@@ -11,6 +11,21 @@
   --bg-secondary: #f9fafb;
   --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+}
+
+:root[data-theme="dark"] {
+  --primary-color: #3b82f6;
+  --primary-hover: #60a5fa;
+  --danger-color: #ef4444;
+  --danger-hover: #f87171;
+  --success-color: #22c55e;
+  --border-color: #374151;
+  --text-primary: #f9fafb;
+  --text-secondary: #9ca3af;
+  --bg-primary: #1f2937;
+  --bg-secondary: #111827;
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3);
 }
 
 * {

@@ -128,19 +128,34 @@
   letter-spacing: 0.025em;
 }
 
-.status-healthy {
+:root[data-theme="light"] .status-healthy {
   background-color: #d1fae5;
   color: #065f46;
 }
 
-.status-unhealthy {
+:root[data-theme="dark"] .status-healthy {
+  background-color: #064e3b;
+  color: #6ee7b7;
+}
+
+:root[data-theme="light"] .status-unhealthy {
   background-color: #fee2e2;
   color: #991b1b;
 }
 
-.status-pending {
+:root[data-theme="dark"] .status-unhealthy {
+  background-color: #7f1d1d;
+  color: #fca5a5;
+}
+
+:root[data-theme="light"] .status-pending {
   background-color: #fef3c7;
   color: #92400e;
+}
+
+:root[data-theme="dark"] .status-pending {
+  background-color: #78350f;
+  color: #fcd34d;
 }
 
 .status-unknown {
