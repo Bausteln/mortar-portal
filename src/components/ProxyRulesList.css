@@ -1,0 +1,149 @@
+.proxy-rules-list {
+  width: 100%;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.list-header h2 {
+  font-size: 1.875rem;
+  color: var(--text-primary);
+}
+
+.btn-refresh {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.btn-refresh:hover {
+  background-color: var(--bg-secondary);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-secondary);
+  background-color: var(--bg-primary);
+  border-radius: 8px;
+  border: 2px dashed var(--border-color);
+}
+
+.rules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.rule-card {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.2s;
+}
+
+.rule-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.rule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.rule-title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.rule-header h3 {
+  font-size: 1.125rem;
+  color: var(--text-primary);
+  word-break: break-word;
+}
+
+.rule-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.btn-edit {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+.btn-edit:hover {
+  background-color: var(--primary-hover);
+}
+
+.btn-delete {
+  background-color: var(--danger-color);
+  color: white;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+.btn-delete:hover {
+  background-color: var(--danger-hover);
+}
+
+.rule-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.rule-details p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  word-break: break-word;
+}
+
+.rule-details strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.status-healthy {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.status-unhealthy {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.status-pending {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.status-unknown {
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
+}
