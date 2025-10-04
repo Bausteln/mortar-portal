@@ -7,6 +7,7 @@ function ProxyRulesList() {
   const [rules, setRules] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [searchQuery, setSearchQuery] = useState('')
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -41,6 +42,21 @@ function ProxyRulesList() {
 
   const handleEdit = (name) => {
     navigate(`/edit/${name}`)
+  }
+
+  const filterRules = (rules) => {
+    if (!searchQuery.trim()) {
+      return rules
+    }
+
+    const query = searchQuery.toLowerCase()
+    return rules.filter(rule => {
+      const name = rule.metadata?.name?.toLowerCase() || ''
+      const domain = rule.spec?.domain?.toLowerCase() || ''
+      const destination = rule.spec?.destination?.toLowerCase() || ''
+
+      return name.includes(query) || domain.includes(query) || destination.includes(query)
+    })
   }
 
   const getStatusBadge = (rule) => {
@@ -88,6 +104,8 @@ function ProxyRulesList() {
     )
   }
 
+  const filteredRules = filterRules(rules)
+
   return (
     <div className="proxy-rules-list">
       <div className="list-header">
@@ -95,11 +113,34 @@ function ProxyRulesList() {
         <button onClick={fetchRules} className="btn-refresh">Refresh</button>
       </div>
 
+      {rules.length > 0 && (
+        <div className="search-bar">
+          <input
+            type="text"
+            placeholder="Search by name, domain, or destination..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="search-input"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="btn-clear-search"
+              aria-label="Clear search"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+      )}
+
       {rules.length === 0 ? (
         <p className="empty-state">No proxy rules found. Create one to get started.</p>
+      ) : filteredRules.length === 0 ? (
+        <p className="empty-state">No rules match your search query.</p>
       ) : (
         <div className="rules-grid">
-          {rules.map((rule) => (
+          {filteredRules.map((rule) => (
             <div key={rule.metadata.name} className="rule-card">
               <div className="rule-header">
                 <div className="rule-title">
