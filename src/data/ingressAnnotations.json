@@ -1,0 +1,716 @@
+[
+  {
+    "key": "nginx.ingress.kubernetes.io/app-root",
+    "type": "string",
+    "description": "Redirect requests for root path",
+    "example": "/app"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/affinity",
+    "type": "cookie",
+    "description": "Enable session stickiness",
+    "example": "cookie"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/affinity-mode",
+    "type": "string",
+    "description": "Session affinity mode",
+    "example": "balanced"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/affinity-canary-behavior",
+    "type": "string",
+    "description": "Canary affinity behavior",
+    "example": "sticky"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/auth-realm",
+    "type": "string",
+    "description": "Authentication realm",
+    "example": "Authentication Required"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/auth-secret",
+    "type": "string",
+    "description": "Authentication credentials secret name",
+    "example": "basic-auth"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/auth-secret-type",
+    "type": "string",
+    "description": "Authentication secret type",
+    "example": "auth-file"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/auth-type",
+    "type": "string",
+    "description": "Authentication method",
+    "example": "basic"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/auth-tls-secret",
+    "type": "string",
+    "description": "TLS client certificate authentication secret",
+    "example": "ca-secret"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/auth-tls-verify-depth",
+    "type": "number",
+    "description": "TLS certificate verification depth",
+    "example": "1"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/auth-tls-verify-client",
+    "type": "string",
+    "description": "TLS client verification mode",
+    "example": "on"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/auth-tls-error-page",
+    "type": "string",
+    "description": "Custom TLS error page URL",
+    "example": "https://example.com/error"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream",
+    "type": "bool",
+    "description": "Pass client certificate to upstream",
+    "example": "true"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/auth-tls-match-cn",
+    "type": "string",
+    "description": "TLS client certificate CN match pattern",
+    "example": "*.example.com"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/auth-url",
+    "type": "string",
+    "description": "External authentication service URL",
+    "example": "http://auth.example.com"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/auth-cache-key",
+    "type": "string",
+    "description": "Authentication cache key",
+    "example": "$remote_user$http_authorization"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/auth-cache-duration",
+    "type": "string",
+    "description": "Authentication cache duration",
+    "example": "200 202 30m"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/auth-keepalive",
+    "type": "number",
+    "description": "Auth keepalive connections",
+    "example": "32"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/auth-keepalive-share-vars",
+    "type": "bool",
+    "description": "Share variables between auth keepalive connections",
+    "example": "true"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/auth-keepalive-requests",
+    "type": "number",
+    "description": "Auth keepalive requests per connection",
+    "example": "100"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/auth-keepalive-timeout",
+    "type": "number",
+    "description": "Auth keepalive timeout in seconds",
+    "example": "60"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/auth-proxy-set-headers",
+    "type": "string",
+    "description": "ConfigMap for auth proxy headers",
+    "example": "namespace/configmap-name"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/auth-snippet",
+    "type": "string",
+    "description": "Custom nginx auth configuration snippet",
+    "example": "proxy_set_header My-Header $http_my_header;"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/enable-global-auth",
+    "type": "bool",
+    "description": "Enable global authentication",
+    "example": "true"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/backend-protocol",
+    "type": "string",
+    "description": "Communication protocol with backend",
+    "example": "HTTPS"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/canary",
+    "type": "bool",
+    "description": "Enable canary deployments",
+    "example": "true"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/canary-by-header",
+    "type": "string",
+    "description": "Canary routing by header",
+    "example": "canary"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/canary-by-header-value",
+    "type": "string",
+    "description": "Canary header value to match",
+    "example": "always"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/canary-by-header-pattern",
+    "type": "string",
+    "description": "Canary header regex pattern",
+    "example": ".*debug.*"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/canary-by-cookie",
+    "type": "string",
+    "description": "Canary routing by cookie",
+    "example": "canary"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/canary-weight",
+    "type": "number",
+    "description": "Canary traffic weight percentage",
+    "example": "20"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/canary-weight-total",
+    "type": "number",
+    "description": "Total canary traffic weight",
+    "example": "100"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/client-body-buffer-size",
+    "type": "string",
+    "description": "Client body buffer size",
+    "example": "1M"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/configuration-snippet",
+    "type": "string",
+    "description": "Custom nginx configuration snippet",
+    "example": "more_set_headers \"X-Custom: value\";"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/custom-http-errors",
+    "type": "string",
+    "description": "Custom HTTP error codes",
+    "example": "404,503"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/custom-headers",
+    "type": "string",
+    "description": "ConfigMap for custom headers",
+    "example": "namespace/configmap-name"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/default-backend",
+    "type": "string",
+    "description": "Custom default backend service",
+    "example": "default-backend"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/enable-cors",
+    "type": "bool",
+    "description": "Enable Cross-Origin Resource Sharing",
+    "example": "true"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/cors-allow-origin",
+    "type": "string",
+    "description": "Allowed CORS origins",
+    "example": "https://example.com"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/cors-allow-methods",
+    "type": "string",
+    "description": "Allowed CORS methods",
+    "example": "GET, POST, PUT"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/cors-allow-headers",
+    "type": "string",
+    "description": "Allowed CORS headers",
+    "example": "X-Custom-Header"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/cors-expose-headers",
+    "type": "string",
+    "description": "Exposed CORS headers",
+    "example": "X-Custom-Header"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/cors-allow-credentials",
+    "type": "bool",
+    "description": "Allow CORS credentials",
+    "example": "true"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/cors-max-age",
+    "type": "number",
+    "description": "CORS preflight cache duration",
+    "example": "3600"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/force-ssl-redirect",
+    "type": "bool",
+    "description": "Force SSL redirect even if no TLS configured",
+    "example": "true"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/from-to-www-redirect",
+    "type": "bool",
+    "description": "Redirect from www to non-www or vice versa",
+    "example": "true"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/http2-push-preload",
+    "type": "bool",
+    "description": "Enable HTTP/2 server push",
+    "example": "true"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/limit-connections",
+    "type": "number",
+    "description": "Concurrent connection limit per IP",
+    "example": "10"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/limit-rps",
+    "type": "number",
+    "description": "Requests per second limit",
+    "example": "100"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/limit-rpm",
+    "type": "number",
+    "description": "Requests per minute limit",
+    "example": "1000"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/permanent-redirect",
+    "type": "string",
+    "description": "Permanent redirect URL",
+    "example": "https://example.com"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/permanent-redirect-code",
+    "type": "number",
+    "description": "Permanent redirect HTTP code",
+    "example": "308"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/temporal-redirect",
+    "type": "string",
+    "description": "Temporal redirect URL",
+    "example": "https://example.com"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/temporal-redirect-code",
+    "type": "number",
+    "description": "Temporal redirect HTTP code",
+    "example": "302"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/preserve-trailing-slash",
+    "type": "bool",
+    "description": "Preserve trailing slash in URLs",
+    "example": "true"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/proxy-body-size",
+    "type": "string",
+    "description": "Maximum request body size",
+    "example": "8m"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/proxy-cookie-domain",
+    "type": "string",
+    "description": "Rewrite cookie domain",
+    "example": "example.com new.example.com"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/proxy-cookie-path",
+    "type": "string",
+    "description": "Rewrite cookie path",
+    "example": "/app/ /"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/proxy-connect-timeout",
+    "type": "number",
+    "description": "Proxy connection timeout in seconds",
+    "example": "60"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/proxy-send-timeout",
+    "type": "number",
+    "description": "Proxy send timeout in seconds",
+    "example": "60"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/proxy-read-timeout",
+    "type": "number",
+    "description": "Proxy read timeout in seconds",
+    "example": "60"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/proxy-next-upstream",
+    "type": "string",
+    "description": "Conditions for trying next upstream",
+    "example": "error timeout"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/proxy-next-upstream-timeout",
+    "type": "number",
+    "description": "Timeout for trying next upstream",
+    "example": "0"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/proxy-next-upstream-tries",
+    "type": "number",
+    "description": "Number of upstream tries",
+    "example": "3"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/proxy-request-buffering",
+    "type": "string",
+    "description": "Enable/disable request buffering",
+    "example": "on"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/proxy-redirect-from",
+    "type": "string",
+    "description": "Proxy redirect from pattern",
+    "example": "http://$host"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/proxy-redirect-to",
+    "type": "string",
+    "description": "Proxy redirect to pattern",
+    "example": "https://$host"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/proxy-http-version",
+    "type": "string",
+    "description": "HTTP version for proxy",
+    "example": "1.1"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/proxy-ssl-secret",
+    "type": "string",
+    "description": "Secret for upstream TLS",
+    "example": "namespace/secret-name"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/proxy-ssl-ciphers",
+    "type": "string",
+    "description": "SSL ciphers for upstream",
+    "example": "HIGH:!aNULL:!MD5"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/proxy-ssl-name",
+    "type": "string",
+    "description": "Server name for upstream SSL",
+    "example": "backend.example.com"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/proxy-ssl-protocols",
+    "type": "string",
+    "description": "SSL protocols for upstream",
+    "example": "TLSv1.2 TLSv1.3"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/proxy-ssl-verify",
+    "type": "string",
+    "description": "Verify upstream SSL certificate",
+    "example": "on"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/proxy-ssl-verify-depth",
+    "type": "number",
+    "description": "Upstream SSL verification depth",
+    "example": "1"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/proxy-ssl-server-name",
+    "type": "string",
+    "description": "Enable SNI for upstream",
+    "example": "on"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/enable-rewrite-log",
+    "type": "bool",
+    "description": "Enable rewrite log",
+    "example": "true"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/rewrite-target",
+    "type": "string",
+    "description": "Target path for request rewriting",
+    "example": "/$2"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/satisfy",
+    "type": "string",
+    "description": "Auth satisfy mode",
+    "example": "any"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/server-alias",
+    "type": "string",
+    "description": "Additional server names",
+    "example": "alias.example.com"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/server-snippet",
+    "type": "string",
+    "description": "Custom nginx server block snippet",
+    "example": "location /custom { return 200; }"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/service-upstream",
+    "type": "bool",
+    "description": "Use service Cluster IP instead of pod endpoints",
+    "example": "true"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/session-cookie-change-on-failure",
+    "type": "bool",
+    "description": "Change session cookie on failure",
+    "example": "true"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/session-cookie-conditional-samesite-none",
+    "type": "bool",
+    "description": "Conditional SameSite=None for session cookie",
+    "example": "true"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/session-cookie-domain",
+    "type": "string",
+    "description": "Session cookie domain",
+    "example": "example.com"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/session-cookie-expires",
+    "type": "string",
+    "description": "Session cookie expiration time",
+    "example": "172800"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/session-cookie-max-age",
+    "type": "string",
+    "description": "Session cookie max age",
+    "example": "86400"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/session-cookie-name",
+    "type": "string",
+    "description": "Session cookie name for affinity",
+    "example": "route"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/session-cookie-path",
+    "type": "string",
+    "description": "Session cookie path",
+    "example": "/"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/session-cookie-samesite",
+    "type": "string",
+    "description": "Session cookie SameSite attribute",
+    "example": "Lax"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/session-cookie-secure",
+    "type": "string",
+    "description": "Session cookie secure flag",
+    "example": "true"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/ssl-redirect",
+    "type": "bool",
+    "description": "Force HTTPS redirect",
+    "example": "true"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/ssl-passthrough",
+    "type": "bool",
+    "description": "SSL passthrough mode",
+    "example": "true"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/stream-snippet",
+    "type": "string",
+    "description": "Custom nginx stream snippet",
+    "example": "proxy_timeout 30s;"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/upstream-hash-by",
+    "type": "string",
+    "description": "Custom load balancing key",
+    "example": "$request_uri"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/x-forwarded-prefix",
+    "type": "string",
+    "description": "X-Forwarded-Prefix header value",
+    "example": "/app"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/load-balance",
+    "type": "string",
+    "description": "Load balancing algorithm",
+    "example": "round_robin"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/upstream-vhost",
+    "type": "string",
+    "description": "Custom upstream virtual host",
+    "example": "backend.example.com"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/denylist-source-range",
+    "type": "string",
+    "description": "Blocked client IP ranges (CIDR)",
+    "example": "192.168.1.0/24"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/whitelist-source-range",
+    "type": "string",
+    "description": "Allowed client IP ranges (CIDR)",
+    "example": "10.0.0.0/24"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/proxy-buffering",
+    "type": "string",
+    "description": "Enable/disable proxy buffering",
+    "example": "on"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/proxy-buffers-number",
+    "type": "number",
+    "description": "Number of proxy buffers",
+    "example": "4"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/proxy-buffer-size",
+    "type": "string",
+    "description": "Proxy buffer size",
+    "example": "8k"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/proxy-busy-buffers-size",
+    "type": "string",
+    "description": "Proxy busy buffers size",
+    "example": "16k"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/proxy-max-temp-file-size",
+    "type": "string",
+    "description": "Maximum temp file size for proxy",
+    "example": "1024m"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/ssl-ciphers",
+    "type": "string",
+    "description": "Allowed SSL ciphers",
+    "example": "HIGH:!aNULL:!MD5"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/ssl-prefer-server-ciphers",
+    "type": "bool",
+    "description": "Prefer server ciphers",
+    "example": "true"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/ssl-protocols",
+    "type": "string",
+    "description": "Allowed SSL/TLS protocols",
+    "example": "TLSv1.2 TLSv1.3"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/connection-proxy-header",
+    "type": "string",
+    "description": "Connection proxy header value",
+    "example": "keep-alive"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/enable-access-log",
+    "type": "bool",
+    "description": "Enable access logging",
+    "example": "true"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/enable-opentelemetry",
+    "type": "bool",
+    "description": "Enable OpenTelemetry tracing",
+    "example": "true"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/opentelemetry-trust-incoming-span",
+    "type": "bool",
+    "description": "Trust incoming OpenTelemetry span",
+    "example": "true"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/use-regex",
+    "type": "bool",
+    "description": "Enable regex in path matching",
+    "example": "true"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/enable-modsecurity",
+    "type": "bool",
+    "description": "Enable ModSecurity WAF",
+    "example": "true"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/enable-owasp-core-rules",
+    "type": "bool",
+    "description": "Enable OWASP Core Rule Set",
+    "example": "true"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/modsecurity-transaction-id",
+    "type": "string",
+    "description": "ModSecurity transaction ID",
+    "example": "$request_id"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/modsecurity-snippet",
+    "type": "string",
+    "description": "Custom ModSecurity rules",
+    "example": "SecRuleEngine On"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/mirror-request-body",
+    "type": "string",
+    "description": "Mirror request body to target",
+    "example": "on"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/mirror-target",
+    "type": "string",
+    "description": "Mirror traffic target URI",
+    "example": "https://mirror.example.com"
+  },
+  {
+    "key": "nginx.ingress.kubernetes.io/mirror-host",
+    "type": "string",
+    "description": "Mirror host header",
+    "example": "mirror.example.com"
+  }
+]

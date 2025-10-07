@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import Fuse from 'fuse.js'
 import { proxyRulesApi } from '../api/client'
+import INGRESS_ANNOTATIONS from '../data/ingressAnnotations.json'
 import './ProxyRuleForm.css'
 
 function ProxyRuleForm() {
@@ -15,6 +17,9 @@ function ProxyRuleForm() {
     port: '',
     tls: true,
   })
+  const [annotations, setAnnotations] = useState({})
+  const [showAdvanced, setShowAdvanced] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
@@ -36,6 +41,10 @@ function ProxyRuleForm() {
         port: rule.spec?.port || '',
         tls: rule.spec?.tls !== undefined ? rule.spec.tls : true,
       })
+      setAnnotations(rule.spec?.annotations || {})
+      if (rule.spec?.annotations && Object.keys(rule.spec.annotations).length > 0) {
+        setShowAdvanced(true)
+      }
     } catch (err) {
       setError(err.message)
     } finally {
@@ -68,6 +77,11 @@ function ProxyRuleForm() {
         spec.port = parseInt(formData.port, 10)
       }
 
+      // Include annotations if any are set
+      if (Object.keys(annotations).length > 0) {
+        spec.annotations = annotations
+      }
+
       const ruleData = {
         apiVersion: 'bausteln.io/v1',
         kind: 'Proxyrule',
@@ -90,6 +104,55 @@ function ProxyRuleForm() {
       setLoading(false)
     }
   }
+
+  const addAnnotation = (key) => {
+    const annotation = INGRESS_ANNOTATIONS.find(a => a.key === key)
+    setAnnotations(prev => ({
+      ...prev,
+      [key]: annotation?.example || ''
+    }))
+    setSearchTerm('')
+  }
+
+  const removeAnnotation = (key) => {
+    setAnnotations(prev => {
+      const newAnnotations = { ...prev }
+      delete newAnnotations[key]
+      return newAnnotations
+    })
+  }
+
+  const updateAnnotationValue = (key, value) => {
+    setAnnotations(prev => ({
+      ...prev,
+      [key]: value
+    }))
+  }
+
+  // Filter out already added annotations
+  const availableAnnotations = useMemo(() =>
+    INGRESS_ANNOTATIONS.filter(annotation => !annotations[annotation.key]),
+    [annotations]
+  )
+
+  // Setup Fuse.js for fuzzy search
+  const fuse = useMemo(() =>
+    new Fuse(availableAnnotations, {
+      keys: ['key', 'description', 'type'],
+      threshold: 0.3,
+      distance: 100,
+      minMatchCharLength: 2,
+    }),
+    [availableAnnotations]
+  )
+
+  // Get filtered annotations based on search term
+  const filteredAnnotations = useMemo(() => {
+    if (!searchTerm) {
+      return availableAnnotations
+    }
+    return fuse.search(searchTerm).map(result => result.item)
+  }, [searchTerm, availableAnnotations, fuse])
 
   if (loading && isEditMode) {
     return <div className="loading">Loading rule...</div>
@@ -175,6 +238,95 @@ function ProxyRuleForm() {
             <span>Enable TLS</span>
           </label>
           <small className="help-text">Enable TLS for the proxy (default: true)</small>
+        </div>
+
+        {/* Advanced Annotations Section */}
+        <div className="advanced-section">
+          <button
+            type="button"
+            className="advanced-toggle"
+            onClick={() => setShowAdvanced(!showAdvanced)}
+          >
+            {showAdvanced ? '▼' : '▶'} Advanced: Ingress Annotations
+            {Object.keys(annotations).length > 0 && (
+              <span className="annotation-count">({Object.keys(annotations).length})</span>
+            )}
+          </button>
+
+          {showAdvanced && (
+            <div className="advanced-content">
+              <small className="help-text" style={{ marginBottom: '1rem', display: 'block' }}>
+                Configure nginx ingress controller behavior using annotations. Search and add annotations below.
+              </small>
+
+              {/* Current Annotations */}
+              {Object.keys(annotations).length > 0 && (
+                <div className="current-annotations">
+                  <h4>Active Annotations</h4>
+                  {Object.entries(annotations).map(([key, value]) => {
+                    const annotation = INGRESS_ANNOTATIONS.find(a => a.key === key)
+                    return (
+                      <div key={key} className="annotation-item">
+                        <div className="annotation-header">
+                          <label className="annotation-key">{key}</label>
+                          <button
+                            type="button"
+                            className="btn-remove"
+                            onClick={() => removeAnnotation(key)}
+                            title="Remove annotation"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                        {annotation && (
+                          <small className="annotation-description">{annotation.description}</small>
+                        )}
+                        <input
+                          type="text"
+                          className="annotation-value"
+                          value={value}
+                          onChange={(e) => updateAnnotationValue(key, e.target.value)}
+                          placeholder={annotation?.example || 'Enter value'}
+                        />
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+
+              {/* Search and Add Annotations */}
+              <div className="add-annotation-section">
+                <h4>Add Annotation</h4>
+                <input
+                  type="text"
+                  className="annotation-search"
+                  placeholder="Search annotations..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+
+                <div className="annotation-suggestions">
+                  {filteredAnnotations.length > 0 ? (
+                    filteredAnnotations.map(annotation => (
+                      <div
+                        key={annotation.key}
+                        className="suggestion-item"
+                        onClick={() => addAnnotation(annotation.key)}
+                      >
+                        <div className="suggestion-key">{annotation.key}</div>
+                        <div className="suggestion-description">{annotation.description}</div>
+                        <div className="suggestion-example">Example: {annotation.example}</div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="no-results">
+                      {searchTerm ? 'No matching annotations found' : 'All annotations have been added'}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="form-actions">
