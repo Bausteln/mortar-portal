@@ -3,6 +3,16 @@ import { useNavigate, useParams } from 'react-router-dom'
 import Fuse from 'fuse.js'
 import { proxyRulesApi } from '../api/client'
 import INGRESS_ANNOTATIONS from '../data/ingressAnnotations.json'
+import {
+  validateName,
+  validateDomain,
+  validateDestination,
+  validatePort,
+  validateNameUnique,
+  validateDomainUnique,
+  validateProxyRuleForm,
+  hasValidationErrors
+} from '../utils/validation'
 import './ProxyRuleForm.css'
 
 function ProxyRuleForm() {
@@ -22,12 +32,33 @@ function ProxyRuleForm() {
   const [searchTerm, setSearchTerm] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [validationErrors, setValidationErrors] = useState({})
+  const [touchedFields, setTouchedFields] = useState({})
+  const [existingRules, setExistingRules] = useState([])
+  const [loadingRules, setLoadingRules] = useState(true)
+
+  useEffect(() => {
+    fetchAllRules()
+  }, [])
 
   useEffect(() => {
     if (isEditMode) {
       fetchRule()
     }
   }, [editName])
+
+  const fetchAllRules = async () => {
+    try {
+      setLoadingRules(true)
+      const response = await proxyRulesApi.getAll()
+      setExistingRules(response.items || [])
+    } catch (err) {
+      console.error('Error fetching existing rules:', err)
+      // Don't show error to user, duplicate checking is a nice-to-have
+    } finally {
+      setLoadingRules(false)
+    }
+  }
 
   const fetchRule = async () => {
     try {
@@ -52,16 +83,91 @@ function ProxyRuleForm() {
     }
   }
 
+  const validateField = (fieldName, value) => {
+    let error = null
+
+    switch (fieldName) {
+      case 'name':
+        error = validateName(value)
+        // Check for duplicate name only in create mode
+        if (!error && !isEditMode && existingRules.length > 0) {
+          error = validateNameUnique(value, existingRules, editName)
+        }
+        break
+      case 'domain':
+        error = validateDomain(value)
+        // Check for duplicate domain
+        if (!error && existingRules.length > 0) {
+          error = validateDomainUnique(value, existingRules, editName)
+        }
+        break
+      case 'destination':
+        error = validateDestination(value)
+        break
+      case 'port':
+        error = validatePort(value)
+        break
+      default:
+        break
+    }
+
+    setValidationErrors((prev) => ({
+      ...prev,
+      [fieldName]: error,
+    }))
+
+    return error
+  }
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
+    const newValue = type === 'checkbox' ? checked : value
+
     setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: newValue,
     }))
+
+    // Validate field if it has been touched
+    if (touchedFields[name]) {
+      validateField(name, newValue)
+    }
+  }
+
+  const handleBlur = (e) => {
+    const { name, value } = e.target
+
+    // Mark field as touched
+    setTouchedFields((prev) => ({
+      ...prev,
+      [name]: true,
+    }))
+
+    // Validate on blur
+    validateField(name, value)
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    // Mark all fields as touched
+    setTouchedFields({
+      name: true,
+      domain: true,
+      destination: true,
+      port: true,
+    })
+
+    // Validate all fields
+    const errors = validateProxyRuleForm(formData, existingRules, isEditMode ? editName : null)
+    setValidationErrors(errors)
+
+    // Don't submit if there are validation errors
+    if (hasValidationErrors(errors)) {
+      setError('Please fix the validation errors before submitting')
+      return
+    }
+
     setLoading(true)
     setError(null)
 
@@ -177,11 +283,16 @@ function ProxyRuleForm() {
             name="name"
             value={formData.name}
             onChange={handleChange}
+            onBlur={handleBlur}
             disabled={isEditMode}
             required
             placeholder="my-proxy-rule"
+            className={validationErrors.name && touchedFields.name ? 'error' : ''}
           />
-          {isEditMode && (
+          {validationErrors.name && touchedFields.name && (
+            <small className="error-text">{validationErrors.name}</small>
+          )}
+          {isEditMode && !validationErrors.name && (
             <small className="help-text">Name cannot be changed in edit mode</small>
           )}
         </div>
@@ -194,10 +305,17 @@ function ProxyRuleForm() {
             name="domain"
             value={formData.domain}
             onChange={handleChange}
+            onBlur={handleBlur}
             required
             placeholder="example.com"
+            className={validationErrors.domain && touchedFields.domain ? 'error' : ''}
           />
-          <small className="help-text">The domain to proxy</small>
+          {validationErrors.domain && touchedFields.domain && (
+            <small className="error-text">{validationErrors.domain}</small>
+          )}
+          {!validationErrors.domain && (
+            <small className="help-text">The domain to proxy</small>
+          )}
         </div>
 
         <div className="form-group">
@@ -208,10 +326,17 @@ function ProxyRuleForm() {
             name="destination"
             value={formData.destination}
             onChange={handleChange}
+            onBlur={handleBlur}
             required
             placeholder="10.0.0.50"
+            className={validationErrors.destination && touchedFields.destination ? 'error' : ''}
           />
-          <small className="help-text">The destination IP or hostname to route traffic to</small>
+          {validationErrors.destination && touchedFields.destination && (
+            <small className="error-text">{validationErrors.destination}</small>
+          )}
+          {!validationErrors.destination && (
+            <small className="help-text">The destination IP or hostname to route traffic to</small>
+          )}
         </div>
 
         <div className="form-group">
@@ -222,9 +347,16 @@ function ProxyRuleForm() {
             name="port"
             value={formData.port}
             onChange={handleChange}
+            onBlur={handleBlur}
             placeholder="3000"
+            className={validationErrors.port && touchedFields.port ? 'error' : ''}
           />
-          <small className="help-text">Optional: The destination port (leave empty for default)</small>
+          {validationErrors.port && touchedFields.port && (
+            <small className="error-text">{validationErrors.port}</small>
+          )}
+          {!validationErrors.port && (
+            <small className="help-text">Optional: The destination port (leave empty for default)</small>
+          )}
         </div>
 
         <div className="form-group">

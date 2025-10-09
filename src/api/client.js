@@ -1,11 +1,25 @@
 const API_BASE = '/api'
 
+/**
+ * Extracts error message from response
+ */
+async function getErrorMessage(response) {
+  try {
+    const text = await response.text()
+    // Backend returns plain text error messages
+    return text || `Request failed with status ${response.status}`
+  } catch (e) {
+    return `Request failed with status ${response.status}`
+  }
+}
+
 export const proxyRulesApi = {
   // Get all proxy rules
   getAll: async () => {
     const response = await fetch(`${API_BASE}/proxyrules`)
     if (!response.ok) {
-      throw new Error('Failed to fetch proxy rules')
+      const errorMsg = await getErrorMessage(response)
+      throw new Error(errorMsg)
     }
     return response.json()
   },
@@ -14,7 +28,8 @@ export const proxyRulesApi = {
   getOne: async (name) => {
     const response = await fetch(`${API_BASE}/proxyrules/${name}`)
     if (!response.ok) {
-      throw new Error(`Failed to fetch proxy rule: ${name}`)
+      const errorMsg = await getErrorMessage(response)
+      throw new Error(errorMsg)
     }
     return response.json()
   },
@@ -29,7 +44,8 @@ export const proxyRulesApi = {
       body: JSON.stringify(rule),
     })
     if (!response.ok) {
-      throw new Error('Failed to create proxy rule')
+      const errorMsg = await getErrorMessage(response)
+      throw new Error(errorMsg)
     }
     return response.json()
   },
@@ -44,7 +60,8 @@ export const proxyRulesApi = {
       body: JSON.stringify(rule),
     })
     if (!response.ok) {
-      throw new Error('Failed to update proxy rule')
+      const errorMsg = await getErrorMessage(response)
+      throw new Error(errorMsg)
     }
     return response.json()
   },
@@ -55,7 +72,8 @@ export const proxyRulesApi = {
       method: 'DELETE',
     })
     if (!response.ok) {
-      throw new Error('Failed to delete proxy rule')
+      const errorMsg = await getErrorMessage(response)
+      throw new Error(errorMsg)
     }
   },
 }

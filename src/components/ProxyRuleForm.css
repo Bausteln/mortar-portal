@@ -325,3 +325,39 @@
   color: var(--text-secondary);
   font-size: 0.875rem;
 }
+
+/* Validation Styles */
+:root[data-theme="light"] .form-group input.error {
+  border-color: #dc2626;
+}
+
+:root[data-theme="dark"] .form-group input.error {
+  border-color: #ef4444;
+}
+
+:root[data-theme="light"] .form-group input.error:focus {
+  outline: none;
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+:root[data-theme="dark"] .form-group input.error:focus {
+  outline: none;
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+:root[data-theme="light"] .error-text {
+  color: #dc2626;
+}
+
+:root[data-theme="dark"] .error-text {
+  color: #f87171;
+}
+
+.error-text {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
