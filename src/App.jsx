@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import ResourcesList from './components/ResourcesList'
 import ProxyRuleForm from './components/ProxyRuleForm'
 import { useTheme } from './context/ThemeContext'
@@ -11,16 +11,10 @@ function App() {
     <Router>
       <div className="app">
         <header className="header">
-          <div className="header-top">
-            <h1>Mortar Portal</h1>
-            <button onClick={toggleTheme} className="theme-toggle" aria-label="Toggle theme">
-              {isDark ? '☀️' : '🌙'}
-            </button>
-          </div>
-          <nav>
-            <Link to="/">Resources</Link>
-            <Link to="/create">Create Proxy Rule</Link>
-          </nav>
+          <h1>Mortar Portal</h1>
+          <button onClick={toggleTheme} className="theme-toggle" aria-label="Toggle theme">
+            {isDark ? '☀️' : '🌙'}
+          </button>
         </header>
         <main className="main">
           <Routes>

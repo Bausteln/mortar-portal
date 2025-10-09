@@ -115,10 +115,7 @@ function ResourcesList() {
     <div key={`proxyrule-${rule.metadata.name}`} className="rule-card">
       <div className="rule-header">
         <div className="rule-title">
-          <div className="title-row">
-            <h3>{rule.metadata.name}</h3>
-            <span className="resource-type-badge resource-type-proxyrule">Proxy Rule</span>
-          </div>
+          <h3>{rule.metadata.name}</h3>
           {getStatusBadge(rule)}
         </div>
         <div className="rule-actions">
@@ -204,7 +201,12 @@ function ResourcesList() {
     <div className="resources-list">
       <div className="list-header">
         <h2>Resources</h2>
-        <button onClick={fetchResources} className="btn-refresh">Refresh</button>
+        <div className="list-actions">
+          <button onClick={() => navigate('/create')} className="btn-create">
+            Create Proxy Rule
+          </button>
+          <button onClick={fetchResources} className="btn-refresh">Refresh</button>
+        </div>
       </div>
 
       <div className="filter-tabs">
