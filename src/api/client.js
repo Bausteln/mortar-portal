@@ -59,3 +59,14 @@ export const proxyRulesApi = {
     }
   },
 }
+
+export const ingressesApi = {
+  // Get all ingresses (read-only)
+  getAll: async () => {
+    const response = await fetch(`${API_BASE}/ingresses`)
+    if (!response.ok) {
+      throw new Error('Failed to fetch ingresses')
+    }
+    return response.json()
+  },
+}

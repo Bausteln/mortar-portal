@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
-import ProxyRulesList from './components/ProxyRulesList'
+import ResourcesList from './components/ResourcesList'
 import ProxyRuleForm from './components/ProxyRuleForm'
 import { useTheme } from './context/ThemeContext'
 import './App.css'
@@ -18,13 +18,13 @@ function App() {
             </button>
           </div>
           <nav>
-            <Link to="/">Proxy Rules</Link>
-            <Link to="/create">Create Rule</Link>
+            <Link to="/">Resources</Link>
+            <Link to="/create">Create Proxy Rule</Link>
           </nav>
         </header>
         <main className="main">
           <Routes>
-            <Route path="/" element={<ProxyRulesList />} />
+            <Route path="/" element={<ResourcesList />} />
             <Route path="/create" element={<ProxyRuleForm />} />
             <Route path="/edit/:name" element={<ProxyRuleForm />} />
           </Routes>
