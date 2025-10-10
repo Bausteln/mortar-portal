@@ -69,7 +69,16 @@ function ResourcesList() {
       if (type === 'proxyrule') {
         const domain = item.spec?.domain?.toLowerCase() || ''
         const destination = item.spec?.destination?.toLowerCase() || ''
-        return name.includes(query) || domain.includes(query) || destination.includes(query) || namespace.includes(query)
+
+        // Check if destinations array contains the query
+        let destinationsMatch = false
+        if (item.spec?.destinations && Array.isArray(item.spec.destinations)) {
+          destinationsMatch = item.spec.destinations.some(dest =>
+            dest.toLowerCase().includes(query)
+          )
+        }
+
+        return name.includes(query) || domain.includes(query) || destination.includes(query) || destinationsMatch || namespace.includes(query)
       } else if (type === 'ingress') {
         const host = item.spec?.rules?.[0]?.host?.toLowerCase() || ''
         return name.includes(query) || host.includes(query) || namespace.includes(query)
@@ -140,7 +149,17 @@ function ResourcesList() {
         {rule.spec && (
           <>
             {rule.spec.domain && <p><strong>Domain:</strong> {rule.spec.domain}</p>}
-            {rule.spec.destination && (
+            {rule.spec.destinations && Array.isArray(rule.spec.destinations) && rule.spec.destinations.length > 0 ? (
+              <p>
+                <strong>Destinations:</strong>{' '}
+                {rule.spec.destinations.join(', ')}
+                {rule.spec.destinations.length > 1 && (
+                  <span style={{ marginLeft: '0.5rem', fontSize: '0.9em', color: '#666' }}>
+                    ({rule.spec.destinations.length} endpoints)
+                  </span>
+                )}
+              </p>
+            ) : rule.spec.destination && (
               <p><strong>Destination:</strong> {rule.spec.destination}</p>
             )}
             {rule.spec.port && <p><strong>Port:</strong> {rule.spec.port}</p>}
