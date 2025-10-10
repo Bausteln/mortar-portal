@@ -52,7 +52,7 @@ export function validateName(name) {
 }
 
 /**
- * Validates a domain name
+ * Validates a domain name (including wildcard domains)
  */
 export function validateDomain(domain) {
   if (!domain || domain.trim() === '') {
@@ -63,18 +63,31 @@ export function validateDomain(domain) {
     return `Domain must not exceed ${MAX_DOMAIN_LENGTH} characters`
   }
 
-  const lowerDomain = domain.toLowerCase()
-
-  if (!DNS_NAME_REGEX.test(lowerDomain)) {
-    return 'Domain must be a valid DNS name (lowercase alphanumeric characters, \'-\', and \'.\' only)'
-  }
-
   if (domain.startsWith('.') || domain.endsWith('.')) {
     return 'Domain must not start or end with a dot'
   }
 
   if (domain.includes('..')) {
     return 'Domain must not contain consecutive dots'
+  }
+
+  // Handle wildcard domains (e.g., *.example.com)
+  let domainToValidate = domain
+  let isWildcard = false
+  if (domain.startsWith('*.')) {
+    isWildcard = true
+    domainToValidate = domain.substring(2) // Remove "*." prefix for validation
+  }
+
+  // Wildcard domain must have at least one part after the wildcard
+  if (isWildcard && domainToValidate === '') {
+    return 'Wildcard domain must be in the format *.example.com'
+  }
+
+  const lowerDomain = domainToValidate.toLowerCase()
+
+  if (!DNS_NAME_REGEX.test(lowerDomain)) {
+    return 'Domain must be a valid DNS name (lowercase alphanumeric characters, \'-\', and \'.\' only)'
   }
 
   return null
