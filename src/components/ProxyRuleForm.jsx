@@ -7,6 +7,7 @@ import {
   validateName,
   validateDomain,
   validateDestination,
+  validateDestinations,
   validatePort,
   validateNameUnique,
   validateDomainUnique,
@@ -23,10 +24,10 @@ function ProxyRuleForm() {
   const [formData, setFormData] = useState({
     name: '',
     domain: '',
-    destination: '',
     port: '',
     tls: true,
   })
+  const [destinations, setDestinations] = useState([''])
   const [annotations, setAnnotations] = useState({})
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
@@ -68,10 +69,19 @@ function ProxyRuleForm() {
       setFormData({
         name: rule.metadata.name || '',
         domain: rule.spec?.domain || '',
-        destination: rule.spec?.destination || '',
         port: rule.spec?.port || '',
         tls: rule.spec?.tls !== undefined ? rule.spec.tls : true,
       })
+
+      // Handle both single destination (backward compatibility) and destinations array
+      if (rule.spec?.destinations && Array.isArray(rule.spec.destinations)) {
+        setDestinations(rule.spec.destinations.length > 0 ? rule.spec.destinations : [''])
+      } else if (rule.spec?.destination) {
+        setDestinations([rule.spec.destination])
+      } else {
+        setDestinations([''])
+      }
+
       setAnnotations(rule.spec?.annotations || {})
       if (rule.spec?.annotations && Object.keys(rule.spec.annotations).length > 0) {
         setShowAdvanced(true)
@@ -101,8 +111,8 @@ function ProxyRuleForm() {
           error = validateDomainUnique(value, existingRules, editName)
         }
         break
-      case 'destination':
-        error = validateDestination(value)
+      case 'destinations':
+        error = validateDestinations(value)
         break
       case 'port':
         error = validatePort(value)
@@ -154,12 +164,13 @@ function ProxyRuleForm() {
     setTouchedFields({
       name: true,
       domain: true,
-      destination: true,
+      destinations: true,
       port: true,
     })
 
     // Validate all fields
-    const errors = validateProxyRuleForm(formData, existingRules, isEditMode ? editName : null)
+    const formDataWithDestinations = { ...formData, destinations }
+    const errors = validateProxyRuleForm(formDataWithDestinations, existingRules, isEditMode ? editName : null)
     setValidationErrors(errors)
 
     // Don't submit if there are validation errors
@@ -174,8 +185,13 @@ function ProxyRuleForm() {
     try {
       const spec = {
         domain: formData.domain,
-        destination: formData.destination,
         tls: formData.tls,
+      }
+
+      // Add destinations array (filter out empty strings)
+      const nonEmptyDestinations = destinations.filter(d => d && d.trim() !== '')
+      if (nonEmptyDestinations.length > 0) {
+        spec.destinations = nonEmptyDestinations
       }
 
       // Only include port if it's provided
@@ -208,6 +224,39 @@ function ProxyRuleForm() {
       setError(err.message)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleDestinationChange = (index, value) => {
+    const newDestinations = [...destinations]
+    newDestinations[index] = value
+    setDestinations(newDestinations)
+
+    // Validate on change if field has been touched
+    if (touchedFields.destinations) {
+      validateField('destinations', newDestinations)
+    }
+  }
+
+  const handleDestinationBlur = () => {
+    setTouchedFields(prev => ({
+      ...prev,
+      destinations: true
+    }))
+    validateField('destinations', destinations)
+  }
+
+  const addDestination = () => {
+    setDestinations([...destinations, ''])
+  }
+
+  const removeDestination = (index) => {
+    if (destinations.length > 1) {
+      const newDestinations = destinations.filter((_, i) => i !== index)
+      setDestinations(newDestinations)
+      if (touchedFields.destinations) {
+        validateField('destinations', newDestinations)
+      }
     }
   }
 
@@ -319,23 +368,46 @@ function ProxyRuleForm() {
         </div>
 
         <div className="form-group">
-          <label htmlFor="destination">Destination</label>
-          <input
-            type="text"
-            id="destination"
-            name="destination"
-            value={formData.destination}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            required
-            placeholder="10.0.0.50"
-            className={validationErrors.destination && touchedFields.destination ? 'error' : ''}
-          />
-          {validationErrors.destination && touchedFields.destination && (
-            <small className="error-text">{validationErrors.destination}</small>
+          <label>Destinations (for load balancing)</label>
+          {destinations.map((destination, index) => (
+            <div key={index} style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+              <input
+                type="text"
+                value={destination}
+                onChange={(e) => handleDestinationChange(index, e.target.value)}
+                onBlur={handleDestinationBlur}
+                placeholder="10.0.0.50 or hostname"
+                className={validationErrors.destinations && touchedFields.destinations ? 'error' : ''}
+                style={{ flex: 1 }}
+              />
+              {destinations.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => removeDestination(index)}
+                  className="btn-remove"
+                  title="Remove destination"
+                  style={{ padding: '0.5rem 1rem' }}
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={addDestination}
+            className="btn-secondary"
+            style={{ marginTop: '0.5rem' }}
+          >
+            + Add Destination
+          </button>
+          {validationErrors.destinations && touchedFields.destinations && (
+            <small className="error-text">{validationErrors.destinations}</small>
           )}
-          {!validationErrors.destination && (
-            <small className="help-text">The destination IP or hostname to route traffic to</small>
+          {!validationErrors.destinations && (
+            <small className="help-text">
+              Add multiple destination IPs or hostnames for load balancing. Traffic will be distributed across all destinations.
+            </small>
           )}
         </div>
 

@@ -126,6 +126,23 @@
   background-color: var(--primary-hover);
 }
 
+.btn-secondary {
+  padding: 0.5rem 1rem;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: var(--bg-primary);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
 /* Advanced Annotations Section */
 .advanced-section {
   margin-top: 2rem;

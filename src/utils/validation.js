@@ -81,11 +81,13 @@ export function validateDomain(domain) {
 }
 
 /**
- * Validates a destination (IP address or DNS name)
+ * Validates a single destination (IP address or DNS name)
+ * @param {string} destination - The destination to validate
+ * @param {boolean} allowEmpty - Whether empty is allowed (default: false)
  */
-export function validateDestination(destination) {
+export function validateDestination(destination, allowEmpty = false) {
   if (!destination || destination.trim() === '') {
-    return 'Destination is required'
+    return allowEmpty ? null : 'Destination is required'
   }
 
   // Check if it looks like an IPv4 address
@@ -120,6 +122,26 @@ export function validateDestination(destination) {
 
   if (destination.includes('..')) {
     return 'Destination must not contain consecutive dots'
+  }
+
+  return null
+}
+
+/**
+ * Validates an array of destinations
+ * @param {Array<string>} destinations - Array of destinations to validate
+ */
+export function validateDestinations(destinations) {
+  if (!destinations || destinations.length === 0) {
+    return 'At least one destination is required'
+  }
+
+  // Validate each destination
+  for (let i = 0; i < destinations.length; i++) {
+    const error = validateDestination(destinations[i], false)
+    if (error) {
+      return `Destination ${i + 1}: ${error.replace('Destination is required', 'Cannot be empty')}`
+    }
   }
 
   return null
@@ -231,8 +253,16 @@ export function validateProxyRuleForm(formData, existingRules = null, currentNam
     if (uniqueDomainError) errors.domain = uniqueDomainError
   }
 
-  const destinationError = validateDestination(formData.destination)
-  if (destinationError) errors.destination = destinationError
+  // Validate destinations (either single destination or array of destinations)
+  if (formData.destinations && Array.isArray(formData.destinations) && formData.destinations.length > 0) {
+    const destinationsError = validateDestinations(formData.destinations)
+    if (destinationsError) errors.destinations = destinationsError
+  } else if (formData.destination) {
+    const destinationError = validateDestination(formData.destination, false)
+    if (destinationError) errors.destination = destinationError
+  } else {
+    errors.destinations = 'At least one destination is required'
+  }
 
   const portError = validatePort(formData.port)
   if (portError) errors.port = portError
